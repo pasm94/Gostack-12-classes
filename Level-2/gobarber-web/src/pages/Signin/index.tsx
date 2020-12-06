@@ -2,20 +2,23 @@ import React from 'react'
 import { Container, Content, Background } from './styles'
 
 import logoImg from '../../assets/logo.svg'
-import { FiLogIn } from 'react-icons/fi'
+import { FiLogIn, FiMail, FiLock } from 'react-icons/fi'
 
-const SigIn: React.FC = () => (
+import Button from '../../components/button/index'
+import Input from '../../components/input/index'
+
+const SignIn: React.FC = () => (
   <Container>
     <Content>
       <img src={logoImg} alt="GoBarber" />
 
       <form >
         <h1>Faça seu Logon</h1>
-        <input type="text" placeholder="E-mail" />
+        <Input name="email" icon={FiMail} type="text" placeholder="E-mail" />
 
-        <input type="password" placeholder="Senha" />
+        <Input name="password" icon={FiLock} type="password" placeholder="Senha" />
 
-        <button type="submit">Entrar</button>
+        <Button type="submit">Entrar</Button>
 
         <a href="forgot">Esqueci minha senha</a>
       </form>
@@ -29,4 +32,4 @@ const SigIn: React.FC = () => (
   </Container>
 )
 
-export default SigIn
+export default SignIn

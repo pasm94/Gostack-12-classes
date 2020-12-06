@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import signInBackgroundImg from '../../assets/sign-in-background.png'
+import signUpBackgroundImg from '../../assets/sign-up-background.png'
 import { shade } from 'polished'
 
 export const Container = styled.div`
@@ -63,6 +63,6 @@ export const Content = styled.div`
 
 export const Background = styled.div`
   flex: 1; // vai fazer o Background ocupar todo espaco, menos os 700px acima
-  background: url(${signInBackgroundImg}) no-repeat center;
+  background: url(${signUpBackgroundImg}) no-repeat center;
   background-size: cover; // vai ocupar tudo se adaptando ao tamanho da page
 `
