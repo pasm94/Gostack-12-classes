@@ -7,8 +7,8 @@ import logoImg from '../../assets/logo.svg'
 import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi'
 import getValidationErrors from '../../utils/getValidationErrors'
 
-import Button from '../../components/button/index'
-import Input from '../../components/input/index'
+import Button from '../../components/Button/index'
+import Input from '../../components/Input/index'
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
