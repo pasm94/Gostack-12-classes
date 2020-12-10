@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useContext } from 'react'
 import { Container, Content, Background } from './styles'
 
 import * as Yup from 'yup'
@@ -12,8 +12,14 @@ import Button from '../../components/Button/index'
 import Input from '../../components/Input/index'
 import getValidationErrors from '../../utils/getValidationErrors'
 
+import AuthContext from '../../context/AuthContext'
+
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+
+  const { name } = useContext(AuthContext)
+
+  
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
