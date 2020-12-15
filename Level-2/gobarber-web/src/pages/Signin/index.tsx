@@ -12,16 +12,21 @@ import Button from '../../components/Button/index'
 import Input from '../../components/Input/index'
 import getValidationErrors from '../../utils/getValidationErrors'
 
-import AuthContext from '../../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
+
+
+interface SignInFormData {
+  email: string;
+  password: string;
+}
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
 
-  const { name } = useContext(AuthContext)
+  const { signIn } = useContext(AuthContext)
 
-  
 
-  const handleSubmit = useCallback(async (data: object) => {
+  const handleSubmit = useCallback(async (data: SignInFormData) => {
     try {
       formRef.current?.setErrors({}) // precisa setar pq quando for sucesso ele n vai entrar no catch
 
@@ -35,12 +40,16 @@ const SignIn: React.FC = () => {
         abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
       })
 
+      signIn({
+        email: data.email,
+        password: data.password,
+      })
     } catch (error) {
       const errors = getValidationErrors(error)
 
       formRef.current?.setErrors(errors)
     }
-  }, [])
+  }, [signIn]) // colocar as variaveis externas nas dependencias
 
 
   return (
