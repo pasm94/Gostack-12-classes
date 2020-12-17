@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useContext } from 'react'
+import React, { useRef, useCallback } from 'react'
 import { Container, Content, Background } from './styles'
 
 import * as Yup from 'yup'
@@ -12,7 +12,7 @@ import Button from '../../components/Button/index'
 import Input from '../../components/Input/index'
 import getValidationErrors from '../../utils/getValidationErrors'
 
-import { AuthContext } from '../../context/AuthContext'
+import { useAuth } from '../../hooks/AuthContext'
 
 
 interface SignInFormData {
@@ -23,9 +23,7 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
 
-  const { user, signIn } = useContext(AuthContext)
-
-  console.log(user)
+  const { signIn } = useAuth()
 
   const handleSubmit = useCallback(async (data: SignInFormData) => {
     try {
@@ -51,7 +49,6 @@ const SignIn: React.FC = () => {
       formRef.current?.setErrors(errors)
     }
   }, [signIn]) // colocar as variaveis externas nas dependencias
-
 
   return (
     <Container>
