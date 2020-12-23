@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTransition } from 'react-spring'
 import { FiAlertCircle, FiXCircle } from 'react-icons/fi'
 
 import Toast from './Toast/index'
@@ -11,11 +12,20 @@ interface ToastContainerProps {
 }
 
 const ToastContainer: React.FC<ToastContainerProps> = ({ messages }) => {
+  const messageWithTransitions = useTransition(
+    messages,
+    message => message.id,
+    {
+      from: { right: '-120%', opacity: 0 }, // -100% fica fora, colocamos 20 a mais pra n mostra a sombra nem borda (garantia)
+      enter: { right: '0%', opacity: 1 },
+      leave: { right: '-120%', opacity: 0 }
+    }
+  )
 
   return (
     <Container >
-      {messages.map(message => (
-        <Toast key={message.id} message={message}>
+      {messageWithTransitions.map(({ item, key, props }) => ( // props eh a estilizacao acima
+        <Toast key={key} message={item} style={props}>
 
         </Toast>
       ))}
