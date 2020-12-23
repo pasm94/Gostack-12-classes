@@ -3,18 +3,28 @@ import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import { Container, Content, Background, AnimationContainer } from './styles'
 import logoImg from '../../assets/logo.svg'
 import getValidationErrors from '../../utils/getValidationErrors'
 import Button from '../../components/Button/index'
 import Input from '../../components/Input/index'
+import { useToast } from '../../hooks/toast'
+import api from '../../services/api'
+
+interface SignUpForData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const { addToast } = useToast()
+  const history = useHistory()
 
-  const handleSubmit = useCallback(async (data: object) => {
+  const handleSubmit = useCallback(async (data: SignUpForData) => {
     try {
       formRef.current?.setErrors({}) // precisa setar pq quando for sucesso ele n vai entrar no catch
 
@@ -30,12 +40,32 @@ const SignUp: React.FC = () => {
         abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
       })
 
-    } catch (error) {
-      const errors = getValidationErrors(error)
+      await api.post('users', data)
 
-      formRef.current?.setErrors(errors)
+      history.push('/')
+
+      addToast({
+        type: 'success',
+        title: 'Cadastro realizado!',
+        description: 'Você já pode fazer seu logon no GoBarber!'
+      })
+
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error)
+
+        formRef.current?.setErrors(errors)
+
+        return
+      }
+
+      addToast({
+        type: 'error',
+        title: 'Erro no cadastro',
+        description: 'Ocorreu um erro ao fazer cadastro, tente novamente!',
+      })
     }
-  }, [])
+  }, [addToast, history]) // colocar as variaveis externas nas dependencias
 
   return (
     <Container>
