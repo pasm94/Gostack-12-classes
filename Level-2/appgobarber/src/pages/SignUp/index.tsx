@@ -1,14 +1,22 @@
-import React, { useRef } from 'react'
-import { Image, KeyboardAvoidingView, Platform, View, ScrollView, TextInput } from 'react-native'
+import React, { useCallback, useRef } from 'react'
+import { Image, KeyboardAvoidingView, Platform, View, ScrollView, TextInput, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
+import * as Yup from 'yup'
 
+import getValidationErrors from '../../utils/getValidationErrors'
 import logoImg from '../../assets/logo.png' // @2x e @3x eh a questao de densidade de pixel (o dispositivo escolhe o certo)
 import Input from '../../components/Input'
 import Button from '../../components/Button'
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles'
+
+interface SignUpForData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
@@ -16,6 +24,43 @@ const SignUp: React.FC = () => {
 
   const emailInputRef = useRef<TextInput>(null)
   const passwordInputRef = useRef<TextInput>(null)
+
+
+  const handleSignUp = useCallback(async (data: SignUpForData) => {
+    try {
+      formRef.current?.setErrors({}) // precisa setar pq quando for sucesso ele n vai entrar no catch
+
+
+      const schema = Yup.object().shape({ // os dados que quero validar serao um objeto, e terao esse formato (shape)
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
+        password: Yup.string().min(6, 'No mínimo 6 dígitos'), // nao precisa do required, pq se tem que ter 6 digitos
+        // no minimo, eh obvio que eh obrigatorio
+      })
+
+      await schema.validate(data, {
+        abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
+      })
+
+      // await api.post('users', data)
+
+      // history.push('/')
+
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error)
+
+        formRef.current?.setErrors(errors)
+
+        return
+      }
+
+      Alert.alert(
+        'Erro no cadastro',
+        'Ocorreu um erro ao fazer cadastro, tente novamente!',
+      )
+    }
+  }, []) // colocar as variaveis externas nas dependencias
 
   return (
     <>
@@ -36,7 +81,7 @@ const SignUp: React.FC = () => {
               <Title>Crie sua conta</Title>
             </View>
 
-            <Form ref={formRef} onSubmit={(data) => { console.log(data) }}>
+            <Form ref={formRef} onSubmit={handleSignUp}>
               <Input
                 name="name" icon="user" placeholder="Nome"
                 autoCorrect={true} autoCapitalize="words" returnKeyType="next"
