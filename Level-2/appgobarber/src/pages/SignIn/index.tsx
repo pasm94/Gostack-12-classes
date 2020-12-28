@@ -11,6 +11,7 @@ import logoImg from '../../assets/logo.png' // @2x e @3x eh a questao de densida
 import Input from '../../components/Input'
 import Button from '../../components/Button'
 import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccountButton, CreateAccountButtonText } from './styles'
+import { useAuth } from '../../hooks/auth'
 
 interface SignInFormData {
   email: string;
@@ -22,6 +23,8 @@ const SignIn: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null)
 
   const navigation = useNavigation()
+
+  const { signIn } = useAuth()
 
   const handleSignIn = useCallback(async (data: SignInFormData) => {
     try {
@@ -37,16 +40,16 @@ const SignIn: React.FC = () => {
         abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
       })
 
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // })
+      await signIn({
+        email: data.email,
+        password: data.password,
+      })
 
       // history.push('/dashboard')
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = getValidationErrors(error)
-        
+
         formRef.current?.setErrors(errors)
 
         return
@@ -58,7 +61,7 @@ const SignIn: React.FC = () => {
       )
 
     }
-  }, []) // colocar as variaveis externas nas dependencias
+  }, [signIn]) // colocar as variaveis externas nas dependencias
 
   return (
     <>

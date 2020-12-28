@@ -49,7 +49,6 @@ const SignUp: React.FC = () => {
         'Cadastro realizado com sucesso!',
         'Você já pode fazer login na aplicação.'
       )
-      //paulotesteandroid@teste.com 123123
 
       navigation.goBack()
 
@@ -67,7 +66,7 @@ const SignUp: React.FC = () => {
         'Ocorreu um erro ao fazer cadastro, tente novamente!',
       )
     }
-  }, []) // colocar as variaveis externas nas dependencias
+  }, [navigation]) // colocar as variaveis externas nas dependencias
 
   return (
     <>
