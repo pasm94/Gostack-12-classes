@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
+// useImperativeHandle eh usado para passar info do component child para component parent
 import { TextInputProps } from 'react-native'
 import { useField } from '@unform/core'
 
@@ -13,12 +14,22 @@ interface InputValueReference {
   value: string;
 }
 
-const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => { // repassando as props que pegamos
+interface InputRef {
+  focus(): void;
+}
+
+// abaixo, ref eh a unica propriedade q nao podemos passar diretamente no elemento
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = ({ name, icon, ...rest }, ref) => { // repassando as props que pegamos
+  // usamos ForwardRefRenderFunction inves de FC quando passamos o ref
   const inputElementRef = useRef<any>(null)
 
   const { registerField, defaultValue = '', fieldName, error } = useField(name)
 
   const inputValueRef = useRef<InputValueReference>({ value: defaultValue })
+
+  useImperativeHandle(ref, () => ({
+    focus() { inputElementRef.current.focus() }
+  })) // eh acessado uma informacao de um elemento child, pelo elemento parent, atraves do ref
 
   useEffect(() => {
     registerField<string>({
@@ -53,4 +64,4 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => { // repassando
   )
 }
 
-export default Input
+export default forwardRef(Input)
