@@ -6,6 +6,7 @@ import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
 import * as Yup from 'yup'
 
+import api from '../../services/api'
 import getValidationErrors from '../../utils/getValidationErrors'
 import logoImg from '../../assets/logo.png' // @2x e @3x eh a questao de densidade de pixel (o dispositivo escolhe o certo)
 import Input from '../../components/Input'
@@ -42,9 +43,15 @@ const SignUp: React.FC = () => {
         abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
       })
 
-      // await api.post('users', data)
+      await api.post('/users', data)
 
-      // history.push('/')
+      Alert.alert(
+        'Cadastro realizado com sucesso!',
+        'Você já pode fazer login na aplicação.'
+      )
+      //paulotesteandroid@teste.com 123123
+
+      navigation.goBack()
 
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
