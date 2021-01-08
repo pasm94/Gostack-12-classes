@@ -9,6 +9,7 @@ import routes from './routes';
 import AppError from '../../errors/AppError';
 
 import '../typeorm';
+import '../../container/index';
 
 const app = express();
 
