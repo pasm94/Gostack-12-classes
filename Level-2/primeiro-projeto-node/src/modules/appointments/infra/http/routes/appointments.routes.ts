@@ -16,9 +16,8 @@ appointmentsRouter.use(ensureAuthenticated);
 // });
 
 appointmentsRouter.post('/', async (request, response) => {
-  const { provider_id, date } = request.body;
-
   const appointmentsRepository = new AppointmentsRepository();
+  const { provider_id, date } = request.body;
 
   const parsedDate = parseISO(date);
 
