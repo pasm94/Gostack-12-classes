@@ -1,3 +1,4 @@
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -11,10 +12,6 @@ export default class ProvidersController {
 
     const providers = await listProviders.execute({ user_id });
 
-    const providersWithoutPassword = providers?.filter(
-      provider => delete provider.password,
-    );
-
-    return response.json(providersWithoutPassword);
+    return response.json(classToClass(providers));
   }
 }
