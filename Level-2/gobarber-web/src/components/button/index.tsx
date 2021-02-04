@@ -3,12 +3,14 @@ import React, { ButtonHTMLAttributes } from 'react'
 
 import { Container } from './styles'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  loading?: boolean;
+}
 // type eh como criar uma interface mas sem definir propriedades especificas
 
-const Button: React.FC<ButtonProps> = ({ children, ...rest }) => ( // rest = restante das props
+const Button: React.FC<ButtonProps> = ({ children, loading, ...rest }) => ( // rest = restante das props
   <Container {...rest}>
-    {children}
+    {loading ? 'Carregando...' : children}
   </Container>
 )
 
