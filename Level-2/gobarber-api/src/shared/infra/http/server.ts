@@ -16,10 +16,10 @@ import '../../container/index';
 
 const app = express();
 
-app.use(rateLimiter);
 app.use(cors());
 app.use(express.json());
 app.use('/files', express.static(uploadConfig.uploadsFolder));
+app.use(rateLimiter); // assim ele nao se aplica as rotas de files, pois vem depois
 app.use(routes);
 
 app.use(errors());
