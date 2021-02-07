@@ -10,11 +10,12 @@ import Tooltip from '../Tooltip'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string; // assim essa prop passa a ser obrigatoria
+  containerStyle?: object;
   icon: React.ComponentType<IconBaseProps>;
 }
 
 // abaixo foi passado Icon em maiuscuilo pq o react nao entende que eh componente se for minusculo
-const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
+const Input: React.FC<InputProps> = ({ name, containerStyle = {}, icon: Icon, ...rest }) => {
   const inputRef = useRef<HTMLInputElement>(null) // inputRef da acesso direto ao input
 
   const [isFocused, setIsFocused] = useState(false)
@@ -47,7 +48,7 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, [fieldName, registerField,])
 
   return (
-    <Container isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
+    <Container style={containerStyle} isErrored={!!error} isFilled={isFilled} isFocused={isFocused}>
       {Icon && <Icon size={20} />} {/*  se icone existir, entao exibe... */}
       <input
         onFocus={handleInputFocused}
