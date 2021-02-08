@@ -17,7 +17,9 @@ import { title } from 'process'
 interface ProfileFormData {
   name: string;
   email: string;
+  old_password: string;
   password: string;
+  password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
@@ -35,22 +37,45 @@ const Profile: React.FC = () => {
       const schema = Yup.object().shape({ // os dados que quero validar serao um objeto, e terao esse formato (shape)
         name: Yup.string().required('Nome obrigatório'),
         email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
-        password: Yup.string().min(6, 'No mínimo 6 dígitos'), // nao precisa do required, pq se tem que ter 6 digitos
-        // no minimo, eh obvio que eh obrigatorio
+        old_password: Yup.string(),
+        password: Yup.string().when('old_password', {
+          is: val => !!val.length,
+          then: Yup.string().required('Campo obrigatório'),
+          otherwise: Yup.string()
+        }),
+        password_confirmation: Yup.string().when('old_password', {
+          is: val => !!val.length,
+          then: Yup.string().required('Campo obrigatório'),
+          otherwise: Yup.string()
+        }).oneOf(
+          [Yup.ref('password')],
+          'Confirmação incorreta',
+        ),
       })
 
       await schema.validate(data, {
         abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
       })
 
-      await api.post('users', data)
+      const formData = Object.assign({
+        name: data.name,
+        email: data.email,
+      }, data.old_password ? {
+        old_password: data.old_password,
+        password: data.password,
+        password_confirmation: data.password_confirmation
+      } : {})
 
-      history.push('/')
+      const response = await api.put('profile', formData)
+
+      updateUser(response.data)
+
+      history.push('/dashboard')
 
       addToast({
         type: 'success',
-        title: 'Cadastro realizado!',
-        description: 'Você já pode fazer seu logon no GoBarber!'
+        title: 'Perfil atualizado!',
+        description: 'Suas informações foram atualizadas com sucesso!'
       })
 
     } catch (error) {
@@ -64,8 +89,8 @@ const Profile: React.FC = () => {
 
       addToast({
         type: 'error',
-        title: 'Erro no cadastro',
-        description: 'Ocorreu um erro ao fazer cadastro, tente novamente!',
+        title: 'Erro na atualização',
+        description: 'Ocorreu um erro ao atualizar o perfil!',
       })
     }
   }, [addToast, history]) // colocar as variaveis externas nas dependencias
