@@ -12,7 +12,6 @@ import Input from '../../components/Input/index'
 import { useToast } from '../../hooks/toast'
 import api from '../../services/api'
 import { useAuth } from '../../hooks/auth'
-import { title } from 'process'
 
 interface ProfileFormData {
   name: string;
