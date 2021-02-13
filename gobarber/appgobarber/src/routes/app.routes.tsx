@@ -1,21 +1,28 @@
-import React from 'react'
-import { createStackNavigator } from '@react-navigation/stack' // p navegar via botoes
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack"; // p navegar via botoes
 
-import Dashboard from '../pages/Dashboard'
+import Dashboard from "../pages/Dashboard";
+import Profile from "../pages/Profile";
+import CreateAppointment from "../pages/CreateAppointment";
+import AppointmentCreated from "../pages/AppointmentCreated";
 
-const App = createStackNavigator()
+const App = createStackNavigator();
 
 const AppRoutes: React.FC = () => {
   return (
     <App.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: '#312e38' },
+        cardStyle: { backgroundColor: "#312e38" },
       }}
     >
       <App.Screen name="Dashboard" component={Dashboard} />
-    </App.Navigator>
-  )
-}
+      <App.Screen name="CreateAppointment" component={CreateAppointment} />
+      <App.Screen name="AppointmentCreated" component={AppointmentCreated} />
 
-export default AppRoutes
+      <App.Screen name="Profile" component={Profile} />
+    </App.Navigator>
+  );
+};
+
+export default AppRoutes;
