@@ -67,7 +67,7 @@ export const ProviderAvatar = styled.Image`
 `
 
 export const ProviderInfo = styled.View`
-  font-size: 1;
+  flex: 1;
   margin-left: 20px;
 `
 
