@@ -140,7 +140,7 @@ export const Hour = styled(RectButton)<HourProps>`
   border-radius: 10px;
   margin-right: 8px;
 
-  opacity: ${(props) => (props.available ? 1 : 0.3)}
+  opacity: ${(props) => (props.available ? 1 : 0.3)};
 `
 
 export const HourText = styled.Text<HourTextProps>`
@@ -150,4 +150,19 @@ export const HourText = styled.Text<HourTextProps>`
 `
 
 export const Content = styled.ScrollView`
+`
+
+export const CreateAppointmentButton = styled(RectButton)`
+  height: 50px;
+  background: #ff9000;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 24px 24px;
+`
+
+export const CreateAppointmentButtonText = styled.Text`
+  font-family: 'RobotoSlab-Medium';
+  font-size: 19px;
+  color: #232129;
 `
