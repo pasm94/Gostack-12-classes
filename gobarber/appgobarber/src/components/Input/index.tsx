@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useImperativeHandle, forwardRef, useState, useCallback } from 'react'
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useCallback,
+} from "react";
 // useImperativeHandle eh usado para passar info do component child para component parent
-import { TextInputProps } from 'react-native'
-import { useField } from '@unform/core'
+import { TextInputProps } from "react-native";
+import { useField } from "@unform/core";
 
-import { Container, TextInput, Icon } from './styles'
+import { Container, TextInput, Icon } from "./styles";
 
 interface InputProps extends TextInputProps {
   name: string;
   icon: string;
+  containerStyle?: {};
 }
 
 interface InputValueReference {
@@ -19,50 +27,60 @@ interface InputRef {
 }
 
 // abaixo, ref eh a unica propriedade q nao podemos passar diretamente no elemento
-const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = ({ name, icon, ...rest }, ref) => { // repassando as props que pegamos
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
+  { name, icon, containerStyle = {}, ...rest },
+  ref
+) => {
+  // repassando as props que pegamos
   // usamos ForwardRefRenderFunction inves de FC quando passamos o ref
-  const inputElementRef = useRef<any>(null)
+  const inputElementRef = useRef<any>(null);
 
-  const { registerField, defaultValue = '', fieldName, error } = useField(name)
+  const { registerField, defaultValue = "", fieldName, error } = useField(name);
 
-  const inputValueRef = useRef<InputValueReference>({ value: defaultValue })
+  const inputValueRef = useRef<InputValueReference>({ value: defaultValue });
 
-  const [isFocused, setIsFocused] = useState(false)
-  const [isFilled, setIsFilled] = useState(false)
+  const [isFocused, setIsFocused] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
 
   const handleInputFocus = useCallback(() => {
-    setIsFocused(true)
-  }, [])
+    setIsFocused(true);
+  }, []);
 
   const handleInputBlur = useCallback(() => {
-    setIsFocused(false)
+    setIsFocused(false);
 
-    setIsFilled(!!inputValueRef.current.value)
-  }, [])
+    setIsFilled(!!inputValueRef.current.value);
+  }, []);
 
   useImperativeHandle(ref, () => ({
-    focus() { inputElementRef.current.focus() }
-  })) // eh acessado uma informacao de um elemento child, pelo elemento parent, atraves do ref
+    focus() {
+      inputElementRef.current.focus();
+    },
+  })); // eh acessado uma informacao de um elemento child, pelo elemento parent, atraves do ref
 
   useEffect(() => {
     registerField<string>({
       name: fieldName,
       ref: inputValueRef.current,
-      path: 'value',
+      path: "value",
       setValue(ref: any, value) {
-        inputValueRef.current.value = value
-        inputElementRef.current.setNativeProps({ text: value })
+        inputValueRef.current.value = value;
+        inputElementRef.current.setNativeProps({ text: value });
       },
       clearValue() {
-        inputValueRef.current.value = ''
-        inputElementRef.current.clear()
-      }
-    })
-  }, [fieldName, registerField])
+        inputValueRef.current.value = "";
+        inputElementRef.current.clear();
+      },
+    });
+  }, [fieldName, registerField]);
 
   return (
-    <Container isFocused={isFocused} isErrored={!!error}>
-      <Icon name={icon} size={20} color={isFocused || isFilled ? '#ff9000' : '#666360'} />
+    <Container style={containerStyle} isFocused={isFocused} isErrored={!!error}>
+      <Icon
+        name={icon}
+        size={20}
+        color={isFocused || isFilled ? "#ff9000" : "#666360"}
+      />
       <TextInput
         ref={inputElementRef}
         keyboardAppearance="dark"
@@ -70,13 +88,13 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = ({ name, ico
         defaultValue={defaultValue}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
-        onChangeText={value => {
-          inputValueRef.current.value = value
+        onChangeText={(value) => {
+          inputValueRef.current.value = value;
         }}
         {...rest}
       />
     </Container>
-  )
-}
+  );
+};
 
-export default forwardRef(Input)
+export default forwardRef(Input);
