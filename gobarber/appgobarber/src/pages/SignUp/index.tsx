@@ -13,7 +13,7 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles'
 
-interface SignUpForData {
+interface SignUpFormData {
   name: string;
   email: string;
   password: string;
@@ -27,7 +27,7 @@ const SignUp: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null)
 
 
-  const handleSignUp = useCallback(async (data: SignUpForData) => {
+  const handleSignUp = useCallback(async (data: SignUpFormData) => {
     try {
       formRef.current?.setErrors({}) // precisa setar pq quando for sucesso ele n vai entrar no catch
 

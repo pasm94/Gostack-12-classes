@@ -26,14 +26,16 @@ import {
 } from "./styles";
 import { useAuth } from "../../hooks/auth";
 
-interface SignUpForData {
+interface ProfileFormData {
   name: string;
   email: string;
   password: string;
+  old_password: string;
+  password_confirmation: string;
 }
 
 const SignUp: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
@@ -43,7 +45,7 @@ const SignUp: React.FC = () => {
   const confirmPasswordInputRef = useRef<TextInput>(null);
 
   const handleSignUp = useCallback(
-    async (data: SignUpForData) => {
+    async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({}); // precisa setar pq quando for sucesso ele n vai entrar no catch
 
@@ -53,20 +55,50 @@ const SignUp: React.FC = () => {
           email: Yup.string()
             .required("E-mail obrigatório")
             .email("Digite um e-mail válido"),
-          password: Yup.string().min(6, "No mínimo 6 dígitos"), // nao precisa do required, pq se tem que ter 6 digitos
-          // no minimo, eh obvio que eh obrigatorio
+          old_password: Yup.string(),
+          password: Yup.string().when("old_password", {
+            is: (val: string) => !!val.length,
+            then: Yup.string().required("Campo obrigatório"),
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when("old_password", {
+              is: (val: string) => !!val.length,
+              then: Yup.string().required("Campo obrigatório"),
+              otherwise: Yup.string(),
+            })
+            .oneOf([Yup.ref("password")], "Confirmação incorreta"),
         });
 
-        await schema.validate(data, {
+        const {
+          name,
+          email,
+          old_password,
+          password,
+          password_confirmation,
+        } = data;
+
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        await schema.validate(formData, {
           abortEarly: false, // retorna todos erros, inves de retornar apenas o primeiro
         });
 
-        await api.post("/users", data);
+        const response = await api.put("/profile", data);
 
-        Alert.alert(
-          "Cadastro realizado com sucesso!",
-          "Você já pode fazer login na aplicação."
-        );
+        updateUser(response.data);
+
+        Alert.alert("Perfil atualizado com sucesso!");
 
         navigation.goBack();
       } catch (error) {
@@ -79,8 +111,8 @@ const SignUp: React.FC = () => {
         }
 
         Alert.alert(
-          "Erro no cadastro",
-          "Ocorreu um erro ao fazer cadastro, tente novamente!"
+          "Erro na atualização do perfil",
+          "Ocorreu um erro ao atualizar perfil, tente novamente!"
         );
       }
     },
@@ -114,7 +146,7 @@ const SignUp: React.FC = () => {
               <Title>Meu perfil</Title>
             </View>
 
-            <Form ref={formRef} onSubmit={handleSignUp}>
+            <Form initialData={{ user }} ref={formRef} onSubmit={handleSignUp}>
               <Input
                 name="name"
                 icon="user"
